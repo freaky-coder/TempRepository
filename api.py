@@ -54,6 +54,14 @@ def convertRatings (value_):
         f_value = f_value+temp
     return f_value
 
+# This method will take string (',' separated)
+# and will return a string array    
+def Str2StrArray (str_):
+    str_arr = []
+    
+    
+    return str_arr
+ 
 #%% Task 1: Fetching data from static urls and omdb API
 for i in range (len(urls)):
     resp=requests.get(urls[i])
