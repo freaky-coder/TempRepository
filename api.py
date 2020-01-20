@@ -5,11 +5,14 @@ Created on Sun Jan 19 12:37:45 2020
 
 """
 #%% -------RESTful API Implementation-------- 
+'''
+Here requests library is used for implementation instead of Flask/Docker, as we do not 
+intend to focus on production ready system.
 
+'''
 #%% Importing Necessary Libraries
 import requests
 import json
-import time
 
 #%% Parameter & variable Declarations
 urls = []
@@ -56,8 +59,7 @@ def convertRatings (value_):
         f_value = f_value+temp
     return f_value
 
-# This method will take string (',' separated)
-# and will return a string array    
+# This method will take string (',' separated) & will return a string array    
 def Str2StrArray (str_):
     return str_.split(',') # Will return a list
  
@@ -66,7 +68,7 @@ for i in range (len(urls)):
     resp=requests.get(urls[i])
     if (resp.status_code == 200): # Check for Successfull connection
         resp_data.append (resp)
-        print ('DEBUG: '+str(resp.json()['id']))
+        print ('DEBUG: Details of '+str(resp.json()['id'])+ ' Fetched.')
     else:
         print ('ERROR: Error Connecting URL. Movie ID:'+urls[i].split('/')[-1].split('.')[0]+'. Try Again\n')   
     
@@ -74,12 +76,12 @@ for i in range (len(movie_id)):
     resp=requests.get(omdb_url.format(movie_id[i], api_id))
     if (resp.status_code == 200): # Check for Successfull connection
         resp_data.append (resp)
-        print ('DEBUG:'+resp.json()['imdbID'])
+        print ('DEBUG: Deatils of '+resp.json()['imdbID']+' Fetched.')
     else:
         print ('ERROR: Conenction to OMDB Failed. Movie ID:'+movie_id[i]+'.Try Again\n')
 
-#%% Task 2: Applying Merging Rules
-# These rules stand only for the static json files we have stored
+#%% Task 2: Applying Merging Rules 
+# The rules will be applied to the data as per the requirements
 key = []
 value = []
 for i in range (len(resp_data)):
@@ -87,23 +89,21 @@ for i in range (len(resp_data)):
         key.append (k)
         value.append (v)
     # Replace the old data with the new processed data    
-    resp_data[i] = ApplyRules (key,value)
+    resp_data[i] = eval(ApplyRules (key,value))
     # Emptying the key-value list 
     del key[:]
     del value[:]
     
-#%% Task 3: Merging both the Data 
-
-
-
-
-
-
-
-
-
-
-
+#%% Task 3: Merging both the Data
+# We will now create a dictionary from the data we just generated above
+respDict = {}
+for i,resp in enumerate (resp_data):
+    respDict[i+1] = resp
+    
+# Clearing previous data
+del resp_data[:]   
+ 
+#%% Task 4: Implementing the GET functionality
 
 
 
