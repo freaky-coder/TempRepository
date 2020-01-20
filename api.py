@@ -17,7 +17,7 @@ intend to focus on production ready system.
 #---------------------------------------------------
 import requests
 import json
-
+import webbrowser
 #---------------------------------------------------
 #%% Parameter & variable Declarations
 #---------------------------------------------------
@@ -120,18 +120,24 @@ del resp_data
 #%% Task 4: Implementing the GET functionality
 #--------------------------------------------------
 # This will take the id as inut and will print the data corresponding to that id.
+# Data will be displayed on the web browser (if ID matched)
 search_id = input ('Input the ID to be searched->\n')
-# Nested Iteration (Complexity: O(n2))
+isFound = False
+# Nested Iteration 
 for k,v in respDict.items():
-    for in_k,in_v in v.items():
+    for in_k , in_v in v.items():
         if ('id' == in_k):
-            print (v)
-            break
-        else:
-            print ('RESULT: Result to this ID not found. :(')
+            if(str(in_v) == search_id):
+                print (v)
+                isFound = True
+                break
         if ('imdbID' == in_k):
-            print (v)
-            break
-        else:
-            print ('RESULT: Result to this ID not found. :(') 
+            if (str(in_v) == search_id):
+                print (v)
+                isFound = True
+                break
+           
+if (isFound == False):  
+    print ('RESULT: Result to this ID not found. :(') 
+
 
