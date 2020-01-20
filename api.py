@@ -4,21 +4,29 @@ Created on Sun Jan 19 12:37:45 2020
 @author: Ayush Kapoor
 
 """
-#%% -------RESTful API Implementation-------- 
+#============================================
+#%% -------RESTful API Implementation--------
+#============================================ 
 '''
 Here requests library is used for implementation instead of Flask/Docker, as we do not 
 intend to focus on production ready system.
 
 '''
+#---------------------------------------------------
 #%% Importing Necessary Libraries
+#---------------------------------------------------
 import requests
 import json
 
+#---------------------------------------------------
 #%% Parameter & variable Declarations
+#---------------------------------------------------
+
 urls = []
 resp_data = []
+# These movie-ids are taken at random from the OMDB
 movie_id = ['tt7131622','tt7131322', 'tt6565702' ,'tt4154796'] # Can be changed later on
-api_id = '68fd98ab'
+api_id = '68fd98ab' # As provided
 omdb_url  = 'http://www.omdbapi.com/?i={0}&apikey={1}&plot=full'
 # The RAW urls are being used here so as to to parse them.
 urls.append('https://bitbucket.org/babydestination/movie-metadata-service/raw/8108d622f70a432c6c5c77bde22ee60129f6d5bf/movies/11043689.json')
@@ -26,7 +34,10 @@ urls.append('https://bitbucket.org/babydestination/movie-metadata-service/raw/81
 urls.append('https://bitbucket.org/babydestination/movie-metadata-service/raw/8108d622f70a432c6c5c77bde22ee60129f6d5bf/movies/3532674.json')
 urls.append('https://bitbucket.org/babydestination/movie-metadata-service/raw/8108d622f70a432c6c5c77bde22ee60129f6d5bf/movies/5979300.json')
 
+#----------------------------------------------------
 #%% Function Declarations
+#----------------------------------------------------
+
 # This method takes key and value as two lists and return a 
 # dictionary after making required operations
 def ApplyRules (k,v):
@@ -45,7 +56,7 @@ def ApplyRules (k,v):
     return json.dumps(dict(zip(k,v)))
 
 # The input to this fucntion is value of 'userrating' key
-# and will convert to the format of 'Rating' of OMDB format
+# and will convert to the format of 'Rating' of OMDB format by creating a JSON string
 def convertRatings (value_):
     c = 0
     f_value = ''
@@ -62,11 +73,14 @@ def convertRatings (value_):
 # This method will take string (',' separated) & will return a string array    
 def Str2StrArray (str_):
     return str_.split(',') # Will return a list
- 
+
+#------------------------------------------------ 
 #%% Task 1: Fetching data from static urls and omdb API
+#------------------------------------------------
+
 for i in range (len(urls)):
     resp=requests.get(urls[i])
-    if (resp.status_code == 200): # Check for Successfull connection
+    if (resp.status_code == 200): # Check for Successful connection
         resp_data.append (resp)
         print ('DEBUG: Details of '+str(resp.json()['id'])+ ' Fetched.')
     else:
@@ -74,13 +88,15 @@ for i in range (len(urls)):
     
 for i in range (len(movie_id)):
     resp=requests.get(omdb_url.format(movie_id[i], api_id))
-    if (resp.status_code == 200): # Check for Successfull connection
+    if (resp.status_code == 200): # Check for Successful connection
         resp_data.append (resp)
         print ('DEBUG: Deatils of '+resp.json()['imdbID']+' Fetched.')
     else:
         print ('ERROR: Conenction to OMDB Failed. Movie ID:'+movie_id[i]+'.Try Again\n')
 
+#--------------------------------------------------
 #%% Task 2: Applying Merging Rules 
+#--------------------------------------------------
 # The rules will be applied to the data as per the requirements
 key = []
 value = []
@@ -93,8 +109,10 @@ for i in range (len(resp_data)):
     # Emptying the key-value list 
     del key[:]
     del value[:]
-    
+
+#--------------------------------------------------    
 #%% Task 3: Merging both the Data
+#--------------------------------------------------    
 # We will now create a dictionary from the data we just generated above
 respDict = {}
 for i,resp in enumerate (resp_data):
@@ -102,8 +120,9 @@ for i,resp in enumerate (resp_data):
     
 # Clearing previous data
 del resp_data[:]   
- 
-#%% Task 4: Implementing the GET functionality
 
+#-------------------------------------------------- 
+#%% Task 4: Implementing the GET functionality
+#--------------------------------------------------
 
 
