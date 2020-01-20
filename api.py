@@ -21,7 +21,6 @@ import json
 #---------------------------------------------------
 #%% Parameter & variable Declarations
 #---------------------------------------------------
-
 urls = []
 resp_data = []
 # These movie-ids are taken at random from the OMDB
@@ -37,9 +36,7 @@ urls.append('https://bitbucket.org/babydestination/movie-metadata-service/raw/81
 #----------------------------------------------------
 #%% Function Declarations
 #----------------------------------------------------
-
-# This method takes key and value as two lists and return a 
-# dictionary after making required operations
+# This method takes key and value as two lists and return a dictionary after making required operations
 def ApplyRules (k,v):
     for i in range (len(k)):
         if (k[i] == 'title'):
@@ -55,8 +52,7 @@ def ApplyRules (k,v):
             v[i] = Str2StrArray (v[i])
     return json.dumps(dict(zip(k,v)))
 
-# The input to this fucntion is value of 'userrating' key
-# and will convert to the format of 'Rating' of OMDB format by creating a JSON string
+# The input to this fucntion is value of 'userrating' key and will convert to the format of 'Rating' of OMDB format by creating a JSON string
 def convertRatings (value_):
     c = 0
     f_value = ''
@@ -77,7 +73,6 @@ def Str2StrArray (str_):
 #------------------------------------------------ 
 #%% Task 1: Fetching data from static urls and omdb API
 #------------------------------------------------
-
 for i in range (len(urls)):
     resp=requests.get(urls[i])
     if (resp.status_code == 200): # Check for Successful connection
@@ -90,7 +85,7 @@ for i in range (len(movie_id)):
     resp=requests.get(omdb_url.format(movie_id[i], api_id))
     if (resp.status_code == 200): # Check for Successful connection
         resp_data.append (resp)
-        print ('DEBUG: Deatils of '+resp.json()['imdbID']+' Fetched.')
+        print ('DEBUG: Details of '+resp.json()['imdbID']+' Fetched.')
     else:
         print ('ERROR: Conenction to OMDB Failed. Movie ID:'+movie_id[i]+'.Try Again\n')
 
@@ -105,7 +100,7 @@ for i in range (len(resp_data)):
         key.append (k)
         value.append (v)
     # Replace the old data with the new processed data    
-    resp_data[i] = eval(ApplyRules (key,value))
+    resp_data[i] = eval(ApplyRules(key,value))
     # Emptying the key-value list 
     del key[:]
     del value[:]
@@ -118,11 +113,25 @@ respDict = {}
 for i,resp in enumerate (resp_data):
     respDict[i+1] = resp
     
-# Clearing previous data
-del resp_data[:]   
+# Clearing previous data (Release memory from redundant data)
+del resp_data   
 
 #-------------------------------------------------- 
 #%% Task 4: Implementing the GET functionality
 #--------------------------------------------------
-
+# This will take the id as inut and will print the data corresponding to that id.
+search_id = input ('Input the ID to be searched->\n')
+# Nested Iteration (Complexity: O(n2))
+for k,v in respDict.items():
+    for in_k,in_v in v.items():
+        if ('id' == in_k):
+            print (v)
+            break
+        else:
+            print ('RESULT: Result to this ID not found. :(')
+        if ('imdbID' == in_k):
+            print (v)
+            break
+        else:
+            print ('RESULT: Result to this ID not found. :(') 
 
