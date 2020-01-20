@@ -37,6 +37,8 @@ def ApplyRules (k,v):
         if (k[i] == 'userrating'):
             k[i] = 'Ratings'   
             v[i] = convertRatings (v[i])
+        if ((k[i] == 'Actors') or (k[i] == 'Writer') or (k[i] == 'Director')):
+            v[i] = Str2StrArray (v[i])
     return json.dumps(dict(zip(k,v)))
 
 # The input to this fucntion is value of 'userrating' key
@@ -57,10 +59,7 @@ def convertRatings (value_):
 # This method will take string (',' separated)
 # and will return a string array    
 def Str2StrArray (str_):
-    str_arr = []
-    
-    
-    return str_arr
+    return str_.split(',') # Will return a list
  
 #%% Task 1: Fetching data from static urls and omdb API
 for i in range (len(urls)):
@@ -92,8 +91,7 @@ for i in range (len(resp_data)):
     # Emptying the key-value list 
     del key[:]
     del value[:]
-
-        
+    
 #%% Task 3: Merging both the Data 
 
 
