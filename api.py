@@ -17,7 +17,7 @@ intend to focus on production ready system.
 #---------------------------------------------------
 import requests
 import json
-import webbrowser
+
 #---------------------------------------------------
 #%% Parameter & variable Declarations
 #---------------------------------------------------
@@ -50,7 +50,7 @@ def ApplyRules (k,v):
             v[i] = convertRatings (v[i])
         if ((k[i] == 'Actors') or (k[i] == 'Writer') or (k[i] == 'Director')):
             v[i] = Str2StrArray (v[i])
-    return json.dumps(dict(zip(k,v)))
+    return json.dumps(dict(zip(k,v))) # Converting the result to JSON
 
 # The input to this fucntion is value of 'userrating' key and will convert to the format of 'Rating' of OMDB format by creating a JSON string
 def convertRatings (value_):
@@ -73,6 +73,7 @@ def Str2StrArray (str_):
 #------------------------------------------------ 
 #%% Task 1: Fetching data from static urls and omdb API
 #------------------------------------------------
+# Fetching from the ststic URLs
 for i in range (len(urls)):
     resp=requests.get(urls[i])
     if (resp.status_code == 200): # Check for Successful connection
@@ -80,7 +81,8 @@ for i in range (len(urls)):
         print ('DEBUG: Details of '+str(resp.json()['id'])+ ' Fetched.')
     else:
         print ('ERROR: Error Connecting URL. Movie ID:'+urls[i].split('/')[-1].split('.')[0]+'. Try Again\n')   
-    
+
+# Accessing and fetching from the OMDB Url
 for i in range (len(movie_id)):
     resp=requests.get(omdb_url.format(movie_id[i], api_id))
     if (resp.status_code == 200): # Check for Successful connection
@@ -126,18 +128,20 @@ isFound = False
 # Nested Iteration 
 for k,v in respDict.items():
     for in_k , in_v in v.items():
+    	# This will take care of the 'id' key in the local database
         if ('id' == in_k):
             if(str(in_v) == search_id):
-                print (v)
+                # Data found
+                print(json.dumps(v))
                 isFound = True
                 break
+        # This will take care of the 'id' key in the OMDB database (the 'imdbID')        
         if ('imdbID' == in_k):
             if (str(in_v) == search_id):
-                print (v)
+            	# Data found
+                print(json.dumps(v)) # Instead of printing we can store it as a data file or show it on a webpage
                 isFound = True
                 break
            
 if (isFound == False):  
-    print ('RESULT: Result to this ID not found. :(') 
-
-
+    print ('RESULT: ID provided does does exist in the database. :(') 
